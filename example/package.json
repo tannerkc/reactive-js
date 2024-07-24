@@ -1,0 +1,17 @@
+{
+  "name": "example",
+  "module": "index.ts",
+  "type": "module",
+  "scripts": {
+    "dev": "custom-framework dev"
+  },
+  "devDependencies": {
+    "@types/bun": "latest"
+  },
+  "peerDependencies": {
+    "typescript": "^5.0.0"
+  },
+  "dependencies": {
+    "vite": "^5.3.4"
+  }
+}
