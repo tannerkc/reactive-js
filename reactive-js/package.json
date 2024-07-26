@@ -1,0 +1,21 @@
+{
+  "name": "reactive-js",
+  "module": "index.ts",
+  "type": "module",
+  "devDependencies": {
+    "@types/bun": "latest",
+    "rollup": "^4.19.0",
+    "rollup-plugin-typescript2": "^0.36.0",
+    "ts-node": "^10.9.2",
+    "ts-node-dev": "^2.0.0"
+  },
+  "peerDependencies": {
+    "typescript": "^5.0.0"
+  },
+  "dependencies": {
+    "@babel/core": "^7.24.9",
+    "babel-plugin-jsx-dom-expressions": "^0.37.23",
+    "dom-expressions": "^0.37.23",
+    "fs-extra": "^11.2.0"
+  }
+}
