@@ -1,7 +1,7 @@
 // reactivity.ts
-type Accessor<T> = () => T;
-type Setter<T> = (v: T | ((prev: T) => T)) => T;
-type Signal<T> = [get: Accessor<T>, set: Setter<T>];
+export type Accessor<T> = () => T;
+export type Setter<T> = (v: T | ((prev: T) => T)) => T;
+export type Signal<T> = [get: Accessor<T>, set: Setter<T>];
 
 interface SignalOptions<T> {
   equals?: (a: T, b: T) => boolean;

@@ -1,6 +1,7 @@
 import { file, serve } from "bun";
-import { render, Component } from '../../renderer';
-import { createComponent } from "../../renderer/lib/component";
+import { render } from '../../renderer';
+import type { Component } from "../../renderer/lib/component";
+import { effect, state } from "../../reactivity";
 
 const ROOT_FOLDER = './src/routes/';
 const CACHE_DURATION = 5 * 60 * 1000; // 5 minutes
@@ -78,37 +79,37 @@ async function router(req: Request): Promise<Response> {
   const url = new URL(req.url);
   const path = cleanPath(url.pathname);
   
-  const possiblePaths = await getPossiblePaths(path);
-  
-  for (const routeInfo of possiblePaths.reverse()) {
-    const result = await executeRoute(routeInfo, req);
-    if (result !== null) {
-      if (typeof result === 'function') {
-        // It's a JSX component
-        return new Response(renderToString(result as Component, routeInfo.params), {
-          headers: { "Content-Type": "text/html" }
-        });
-      } else if (result instanceof Response) {
-        return result;
-      } else if (typeof result === 'string') {
-        return new Response(result);
-      } else {
-        return new Response(JSON.stringify(result), {
-          headers: { "Content-Type": "application/json" }
-        });
+  const [route, setRoute] = state<{ component: Component, params: Record<string, string> } | null>(null);
+
+  effect(async () => {
+    const possiblePaths = await getPossiblePaths(path);
+    
+    for (const routeInfo of possiblePaths.reverse()) {
+      const result = await executeRoute(routeInfo, req);
+      if (result !== null && typeof result === 'function') {
+        setRoute({ component: result as Component, params: routeInfo.params });
+        break;
       }
     }
-  }
+  });
 
-  return new Response("Not found", { status: 404 });
+  return new Response(await renderToString(() => {
+    const currentRoute = route();
+    return currentRoute ? currentRoute.component(currentRoute.params) : 'Not found';
+  }), {
+    headers: { "Content-Type": "text/html" }
+  });
 }
 
-// Simple JSX to string renderer for SSR
-function renderToString(precomponent: Component, props: Record<string, any>): string {
-  const tempDiv = document.createElement('div');
-  let component = createComponent(precomponent)
-  render(() => component(props), tempDiv);
-  return tempDiv.innerHTML;
+async function renderToString(component: () => Node): Promise<string> {
+  return new Promise<string>((resolve) => {
+    const tempDiv = document.createElement('div');
+    render(() => {
+      const result = component();
+      resolve(tempDiv.innerHTML);
+      return result;
+    }, tempDiv);
+  });
 }
 
 // Middleware support
