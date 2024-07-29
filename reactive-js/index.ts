@@ -3,12 +3,14 @@ export { createContext, useContext, createMemo, effect, state } from './packages
 
 import { effect, state } from './packages/reactivity';
 import { createElement, Fragment } from './packages/renderer/lib/jsx-runtime';
+import { router } from './packages/core/src/reactiveRouter';
 
 const Reactive = {
     state,
     effect,
     createElement,
-    Fragment
+    Fragment,
+    router
 };
 
 export default Reactive
