@@ -100,7 +100,7 @@ async function createProject(projectName) {
   for (const [filePath, fileContent] of Object.entries(projectFiles)) {
     const fullPath = path.join(projectRoot, filePath);
     await Bun.write(fullPath, fileContent);
-    await sleep(200); // Simulate some work
+    await sleep(200);
   }
   s.stop('Project files created');
 
