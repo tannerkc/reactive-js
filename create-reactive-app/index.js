@@ -4,7 +4,7 @@ import { mkdir, readFile, rm } from "node:fs/promises";
 import path from 'path';
 import { spawn } from 'bun';
 import log from 'colored-terminal'
-import { intro, outro, confirm, select, spinner, isCancel } from '@clack/prompts';
+import { intro, outro, select, spinner, isCancel } from '@clack/prompts';
 import { existsSync } from 'fs';
 
 const __filename = import.meta.file;
@@ -103,6 +103,9 @@ async function createProject(projectName) {
     await sleep(200); // Simulate some work
   }
   s.stop('Project files created');
+
+  clearInterval(updateFileSpinner);
+  process.stdout.write('\r✔ Project files created successfully!         \n');
 
   const packageJson = {
     name: path.basename(projectRoot),
