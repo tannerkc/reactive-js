@@ -1,2 +1,2 @@
-export { Component } from './lib/component'
-export { render } from './src/index'
+export { type Component } from './lib/component'
+export { render, renderToString } from './src/index'

@@ -5,7 +5,10 @@
     "target": "ESNext",
     "module": "ESNext",
     "moduleDetection": "force",
-    "jsx": "react-jsx",
+    // "jsx": "react-jsx",
+    "jsx": "preserve",
+    // "jsxFactory": "Reactive.createElement",
+    // "jsxFragmentFactory": "Reactive.Fragment",
     "allowJs": true,
 
     // Bundler mode

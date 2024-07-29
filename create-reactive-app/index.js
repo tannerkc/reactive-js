@@ -56,111 +56,6 @@ export default () => {
 
 const sleep = (ms) => new Promise(resolve => setTimeout(resolve, ms));
 
-const spinners = ['⠋', '⠙', '⠹', '⠸', '⠼', '⠴', '⠦', '⠧', '⠇', '⠏'];
-
-// async function createProject(projectName) {
-//   const projectRoot = projectName === '.' ? process.cwd() : path.join(process.cwd(), projectName);
-
-//   log.magenta('┌' + '─'.repeat(50) + '┐');
-//   log.magenta('│ Creating project structure...                    │');
-//   log.magenta('└' + '─'.repeat(50) + '┘');
-
-//   let spinnerIndex = 0;
-//   const updateSpinner = setInterval(() => {
-//     process.stdout.write(`\r${spinners[spinnerIndex]} Creating project structure...`);
-//     spinnerIndex = (spinnerIndex + 1) % spinners.length;
-//   }, 100);
-
-//   await mkdir(projectRoot, { recursive: true });
-//   await mkdir(path.join(projectRoot, 'src/routes'), { recursive: true });
-//   await mkdir(path.join(projectRoot, 'public'), { recursive: true });
-
-//   clearInterval(updateSpinner);
-//   process.stdout.write('\r✔ Project structure created successfully!      \n');
-
-//   log.magenta('┌' + '─'.repeat(50) + '┐');
-//   log.magenta('│ Creating project files...                        │');
-//   log.magenta('└' + '─'.repeat(50) + '┘');
-
-//   spinnerIndex = 0;
-//   const updateFileSpinner = setInterval(() => {
-//     process.stdout.write(`\r${spinners[spinnerIndex]} Creating project files...`);
-//     spinnerIndex = (spinnerIndex + 1) % spinners.length;
-//   }, 100);
-
-//   for (const [filePath, fileContent] of Object.entries(projectFiles)) {
-//     const fullPath = path.join(projectRoot, filePath);
-//     await Bun.write(fullPath, fileContent);
-//     await sleep(200);
-//   }
-
-//   clearInterval(updateFileSpinner);
-//   process.stdout.write('\r✔ Project files created successfully!         \n');
-
-//   const packageJson = {
-//     name: projectName,
-//     version: "0.1.0",
-//     private: true,
-//     scripts: {
-//       start: "bun run index.ts"
-//     },
-//     dependencies: {
-//       reactivejs: "^1.0.0",
-//     },
-//     devDependencies: {
-//       typescript: "^4.0.0",
-//     }
-//   };
-
-//   console.log('┌' + '─'.repeat(50) + '┐');
-//   console.log('│ Creating package.json...                         │');
-//   console.log('└' + '─'.repeat(50) + '┘');
-
-//   spinnerIndex = 0;
-//   const updatePackageSpinner = setInterval(() => {
-//     process.stdout.write(`\r${spinners[spinnerIndex]} Creating package.json...`);
-//     spinnerIndex = (spinnerIndex + 1) % spinners.length;
-//   }, 100);
-
-//   await Bun.write(path.join(projectRoot, 'package.json'), JSON.stringify(packageJson, null, 2));
-//   await sleep(200);
-
-//   clearInterval(updatePackageSpinner);
-//   process.stdout.write('\r✔ package.json created successfully!          \n');
-
-//   console.log('┌' + '─'.repeat(50) + '┐');
-//   console.log('│ Installing dependencies...                       │');
-//   console.log('└' + '─'.repeat(50) + '┘');
-
-//   const updateInstallSpinner = setInterval(() => {
-//     process.stdout.write(`\r${spinners[spinnerIndex]} Installing dependencies...`);
-//     spinnerIndex = (spinnerIndex + 1) % spinners.length;
-//   }, 100);
-
-//   try {
-//     const install = spawn(['bun', 'install'], {
-//       cwd: projectRoot,
-//       stdio: ['ignore', 'ignore', 'inherit']
-//     });
-
-//     await install.exited;
-
-//     clearInterval(updateInstallSpinner);
-//     process.stdout.write('\r✔ Dependencies installed successfully!        \n');
-//   } catch (error) {
-//     clearInterval(updateInstallSpinner);
-//     process.stdout.write('\r❌ Failed to install dependencies. Please run `bun install` manually.\n');
-//     console.error(error);
-//   }
-
-//   console.log('┌' + '─'.repeat(50) + '┐');
-//   console.log('│ Project created successfully!                    │');
-//   console.log('└' + '─'.repeat(50) + '┘');
-
-//   console.log('\nNext steps:');
-//   console.log(`1. cd ${projectName}`);
-//   console.log(`3. bun run start`);
-// }
 async function createProject(projectName) {
   const projectRoot = projectName === '.' ? process.cwd() : path.join(process.cwd(), projectName);
   
@@ -261,7 +156,6 @@ if (!projectName) {
 }
 
 createProject(projectName);
-
 
 async function convertToReactiveApp(projectRoot) {
   const s = spinner();

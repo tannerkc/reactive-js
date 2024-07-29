@@ -13,13 +13,11 @@
   "scripts": {
     "start": "bun run index.js"
   },
-  "devDependencies": {
-    "@types/bun": "latest"
-  },
   "peerDependencies": {
     "typescript": "^5.0.0"
   },
   "dependencies": {
+    "@types/bun": "latest",
     "@clack/prompts": "^0.7.0",
     "colored-terminal": "^1.0.5"
   }

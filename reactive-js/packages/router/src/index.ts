@@ -1,14 +1,7 @@
 import { file, serve } from "bun";
-import { render } from '../../renderer';
-import type { Component } from "../../renderer/lib/component";
-import { effect, state } from "../../reactivity";
+import { renderToString } from '../../renderer';
 
 const ROOT_FOLDER = './src/routes/';
-const CACHE_DURATION = 5 * 60 * 1000; // 5 minutes
-
-// Cache for route handlers
-const routeCache = new Map<string, { handler: Function, timestamp: number }>();
-
 // Utility function to clean up file paths
 const cleanPath = (path: string): string => path.replace(/\/+/g, '/').replace(/\/$/, '') || '/';
 
@@ -22,7 +15,7 @@ async function getPossiblePaths(url: string): Promise<Array<{ path: string, para
   const possiblePaths: Array<{ path: string, params: Record<string, string> }> = [];
 
   for (let i = 0; i <= pathParts.length; i++) {
-    const checkPath = cleanPath(`${currentPath}/index.ts`);
+    const checkPath = cleanPath(`${currentPath}/index.tsx`);
     if (await file(checkPath).exists()) {
       possiblePaths.push({ path: checkPath, params: {} });
     }
@@ -48,26 +41,21 @@ async function getPossiblePaths(url: string): Promise<Array<{ path: string, para
   return possiblePaths;
 }
 
-// Enhanced route execution with caching
-async function executeRoute(routeInfo: { path: string, params: Record<string, string> }, req: Request): Promise<Response | Component | null> {
+// Function to execute a route
+async function executeRoute(routeInfo: { path: string, params: Record<string, string> }, req: Request): Promise<string | null> {
   const { path, params } = routeInfo;
-  const cacheKey = `${path}:${req.method}`;
-  const cachedRoute = routeCache.get(cacheKey);
-  
-  if (cachedRoute && Date.now() - cachedRoute.timestamp < CACHE_DURATION) {
-    return cachedRoute.handler(req, params);
-  }
 
   try {
     const module = await import(path);
-    const httpVerb = req.method.toLowerCase();
-    const handler = module[httpVerb as keyof typeof module] || module.handler || module.default;
+    const Component = module.default;
 
-    if (handler) {
-      routeCache.set(cacheKey, { handler, timestamp: Date.now() });
-      return handler(req, params);
+    if (typeof Component === 'function') {
+      const props = { params, req };
+      const jsx = Component(props);
+      return await renderToString(jsx);
     }
-    throw new Error(`No handler found for ${httpVerb} ${path}`);
+
+    throw new Error(`No valid component found in ${path}`);
   } catch (e) {
     console.error(`Error executing route ${path}:`, e);
     return null;
@@ -79,37 +67,18 @@ async function router(req: Request): Promise<Response> {
   const url = new URL(req.url);
   const path = cleanPath(url.pathname);
   
-  const [route, setRoute] = state<{ component: Component, params: Record<string, string> } | null>(null);
-
-  effect(async () => {
-    const possiblePaths = await getPossiblePaths(path);
-    
-    for (const routeInfo of possiblePaths.reverse()) {
-      const result = await executeRoute(routeInfo, req);
-      if (result !== null && typeof result === 'function') {
-        setRoute({ component: result as Component, params: routeInfo.params });
-        break;
-      }
+  const possiblePaths = await getPossiblePaths(path);
+  
+  for (const routeInfo of possiblePaths.reverse()) {
+    const result = await executeRoute(routeInfo, req);
+    if (result !== null) {
+      return new Response(result, {
+        headers: { "Content-Type": "text/html" }
+      });
     }
-  });
+  }
 
-  return new Response(await renderToString(() => {
-    const currentRoute = route();
-    return currentRoute ? currentRoute.component(currentRoute.params) : 'Not found';
-  }), {
-    headers: { "Content-Type": "text/html" }
-  });
-}
-
-async function renderToString(component: () => Node): Promise<string> {
-  return new Promise<string>((resolve) => {
-    const tempDiv = document.createElement('div');
-    render(() => {
-      const result = component();
-      resolve(tempDiv.innerHTML);
-      return result;
-    }, tempDiv);
-  });
+  return new Response("Not found", { status: 404 });
 }
 
 // Middleware support
