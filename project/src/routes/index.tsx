@@ -1,3 +1,5 @@
+/** @jsx h */
+
 export default () => {
   return (
     <div>

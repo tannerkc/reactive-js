@@ -17,12 +17,14 @@ function renderToString(element) {
 }
 
 export function compileJSXToHTML(jsxCode) {
+  if (!jsxCode) return
+  
   const transformedCode = transformSync(jsxCode, {
     ...babelConfig
   }).code;
 
   const createElementCode = `
-    import { createElement, Fragment } from './jsx-runtime.js';
+    import { createElement, Fragment } from './dom-utils.js';
     ${transformedCode};
   `;
 
