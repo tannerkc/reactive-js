@@ -1,6 +1,6 @@
-import { createElement, jsx } from "custom-framework";
+import Reactive from "custom-framework";
 
-export function Home(): JSX.Element {
+export default () => {
   return (
     <div>
       <h1>Welcome to the Home Page</h1>

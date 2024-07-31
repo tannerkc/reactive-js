@@ -169,6 +169,10 @@ export function initRouter(): void {
   });
 
   renderRoute(window.location.pathname);
+
+  // document.addEventListener('DOMContentLoaded', () => {
+  //   mount('hello world')
+  // });
 }
 
 ///////////////

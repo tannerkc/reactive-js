@@ -1,7 +1,8 @@
-import { initRouter, mount } from "custom-framework";
-// initRouter();
+import { initRouter } from "custom-framework";
+initRouter();
 
-document.addEventListener('DOMContentLoaded', () => {
-  initRouter();
-  mount('hello world')
-});
+// document.addEventListener('DOMContentLoaded', () => {
+//   initRouter();
+//   mount('hello world')
+// });
+

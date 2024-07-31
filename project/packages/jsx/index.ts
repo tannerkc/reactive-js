@@ -1,0 +1,1 @@
+export { compileJSXToHTML } from './src/jsxToHtml.ts';

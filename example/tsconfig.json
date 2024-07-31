@@ -18,7 +18,7 @@
       "paths": {
         "@/*": ["src/*"]
       },
-      "jsx": "react",
+      "jsx": "preserve",
       "jsxFactory": "createElement",
       "jsxFragmentFactory": "Fragment"
     },

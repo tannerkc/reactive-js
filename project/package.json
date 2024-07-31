@@ -1,0 +1,21 @@
+{
+  "name": "project",
+  "version": "1.0.0",
+  "module": "index.ts",
+  "type": "module",
+  "scripts": {
+    "dev": "bun ./packages/server/index.ts"
+  },
+  "devDependencies": {
+    "@types/bun": "latest",
+    "babel-plugin-jsx-dom-expressions": "^0.38.1",
+    "@babel/preset-typescript": "^7.14.5"
+  },
+  "peerDependencies": {
+    "typescript": "^5.0.0"
+  },
+  "dependencies": {
+    "@babel/core": "^7.25.2",
+    "@babel/preset-env": "^7.25.3"
+  }
+}
