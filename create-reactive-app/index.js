@@ -21,16 +21,37 @@ async function checkVersion() {
 
     if (semver.lt(version, MINIMUM_VERSION)) {
       log.yellow('───────────────────────────────────────────────────');
-      log.yellow('Warning: You are using an outdated version of generate-reactive-app.');
+      log.warn('An outdated version of generate-reactive-app was detected.');
       log.yellow(`Your version: ${version}`);
       log.yellow(`Minimum recommended version: ${MINIMUM_VERSION}`);
-      log.yellow('Please clear your bunx/npx cache and run the command again.');
-      log.yellow('');
-      log.yellow('To clear the cache:');
-      log.yellow('For bunx: bun pm cache rm');
-      log.yellow('For npx: npx clear-npx-cache');
-      log.yellow('───────────────────────────────────────────────────');
-      process.exit(1);
+      log.yellow('Clearing cache and updating...');
+
+      const s = spinner();
+      s.start('Clearing cache');
+
+      try {
+        // Clear bunx cache
+        const clearBunxCache = spawn(['bun', 'pm', 'cache', 'rm']);
+        await clearBunxCache.exited;
+
+        // Clear npx cache
+        const clearNpxCache = spawn(['npm', 'cache', 'clean', '--force']);
+        await clearNpxCache.exited;
+
+        s.stop('Cache cleared successfully');
+
+        // Re-run the current script with the same arguments
+        const updatedScript = spawn(['bunx', 'generate-reactive-app', ...process.argv.slice(2)], {
+          stdio: 'inherit'
+        });
+
+        await updatedScript.exited;
+        process.exit(0);
+      } catch (error) {
+        s.stop('Failed to clear cache');
+        console.error('Error clearing cache:', error);
+        process.exit(1);
+      }
     }
   } catch (error) {
     console.error('Failed to check version:', error);
