@@ -1,3 +1,3 @@
-module.exports = {
-    plugins: [["jsx-dom-expressions", { moduleName: "dom-expressions" }]]
+export default {
+    plugins: [["babel-plugin-jsx-dom-expressions", { moduleName: "dom-expressions" }]]
 };

@@ -2,6 +2,9 @@
   "name": "example",
   "module": "index.ts",
   "type": "module",
+  "scripts": {
+    "dev": "reactive-js dev"
+  },
   "devDependencies": {
     "@types/bun": "latest"
   },

@@ -1,11 +1,15 @@
 {
-    "plugins": [
-      ["babel-plugin-jsx-dom-expressions", {
-        "moduleName": "./jsx-runtime.js",
-        "builtIns": [],
-        "contextToCustomElements": true,
-        "wrapConditionals": true,
-        "generate": "dom"
-      }]
-    ]
+  "presets": [
+    ["@babel/preset-env", { "targets": { "node": "current" } }],
+    ["@babel/preset-typescript", { "jsxPragma": "jsx" }]
+  ],
+  "plugins": [
+    ["babel-plugin-jsx-dom-expressions", {
+      "moduleName": "./packages/renderer/lib/jsx-runtime.js",
+      "builtIns": [],
+      "contextToCustomElements": true,
+      "wrapConditionals": true,
+      "generate": "dom"
+    }]
+  ]
 }
