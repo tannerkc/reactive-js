@@ -8,3 +8,4 @@ initiateApp()  // hydrates document.querySelector('div[app]') with the jsx file 
 // http://localhost:3000/users/123 will fetch ./src/routes/users/[userId]/index.tsx
 
 // this function also uses bun.js server to servers side render the page, or vite for client rendered pages. A jsx file needs to specify "use client" to be CSR.
+// this function also initiates a global store that can be dynamically utilized.

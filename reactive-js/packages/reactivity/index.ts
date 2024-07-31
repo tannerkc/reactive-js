@@ -1,1 +1,1 @@
-export { createSignal } from './src';
+export * from './src';

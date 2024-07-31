@@ -1,0 +1,11 @@
+{
+    "plugins": [
+      ["babel-plugin-jsx-dom-expressions", {
+        "moduleName": "./jsx-runtime.js",
+        "builtIns": [],
+        "contextToCustomElements": true,
+        "wrapConditionals": true,
+        "generate": "dom"
+      }]
+    ]
+}
