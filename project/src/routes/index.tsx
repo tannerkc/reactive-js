@@ -1,6 +1,3 @@
-/** @jsx h */
-// import { h } from "jsx-dom-expressions";
-
 export default () => {
   return (
     <div>

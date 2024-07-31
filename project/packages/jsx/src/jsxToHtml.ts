@@ -1,22 +1,17 @@
 import { transformSync } from '@babel/core';
 import babelConfig from '../../../babel.config.ts';
 
-function createElement(tag, props, ...children) {
-  const element = { tag, props: props || {}, children };
-  return element;
-}
-
 function renderToString(element) {
   if (typeof element === 'string') {
     return element;
   }
 
   const { tag, props, children } = element;
-  const propString = Object.entries(props)
+  const propString = Object.entries(props || {})
     .map(([key, value]) => `${key}="${value}"`)
     .join(' ');
 
-  const childrenString = children.map(renderToString).join('');
+  const childrenString = (children || []).map(renderToString).join('');
 
   return `<${tag}${propString ? ' ' + propString : ''}>${childrenString}</${tag}>`;
 }
@@ -27,7 +22,7 @@ export function compileJSXToHTML(jsxCode) {
   }).code;
 
   const createElementCode = `
-    const createElement = ${createElement.toString()};
+    import { createElement, Fragment } from './jsx-runtime.js';
     ${transformedCode};
   `;
 
