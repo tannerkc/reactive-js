@@ -3,12 +3,39 @@
 import { mkdir, readFile, rm } from "node:fs/promises";
 import path from 'path';
 import { spawn } from 'bun';
+import semver from 'semver';
 import log from 'colored-terminal'
 import { intro, outro, select, spinner, isCancel } from '@clack/prompts';
 import { existsSync } from 'fs';
 
 const __filename = import.meta.file;
 const __dirname = import.meta.dir;
+
+const MINIMUM_VERSION = '0.0.5';
+
+async function checkVersion() {
+  try {
+    const packageJsonPath = path.join(__dirname, 'package.json');
+    const packageJsonContent = await readFile(packageJsonPath, 'utf-8');
+    const { version } = JSON.parse(packageJsonContent);
+
+    if (semver.lt(version, MINIMUM_VERSION)) {
+      log.yellow('───────────────────────────────────────────────────');
+      log.yellow('Warning: You are using an outdated version of generate-reactive-app.');
+      log.yellow(`Your version: ${version}`);
+      log.yellow(`Minimum recommended version: ${MINIMUM_VERSION}`);
+      log.yellow('Please clear your bunx/npx cache and run the command again.');
+      log.yellow('');
+      log.yellow('To clear the cache:');
+      log.yellow('For bunx: bun pm cache rm');
+      log.yellow('For npx: npx clear-npx-cache');
+      log.yellow('───────────────────────────────────────────────────');
+      process.exit(1);
+    }
+  } catch (error) {
+    console.error('Failed to check version:', error);
+  }
+}
 
 const projectFiles = {
   'tsconfig.json': JSON.stringify({
@@ -96,26 +123,18 @@ async function createProject(projectName) {
   await mkdir(path.join(projectRoot, 'public'), { recursive: true });
   s.stop('Project structure created');
 
-  s.start('Creating project files');
-  for (const [filePath, fileContent] of Object.entries(projectFiles)) {
-    const fullPath = path.join(projectRoot, filePath);
-    await Bun.write(fullPath, fileContent);
-    await sleep(200); // Simulate some work
-  }
-  s.stop('Project files created');
-
-  clearInterval(updateFileSpinner);
-  process.stdout.write('\r✔ Project files created successfully!         \n');
-
   const packageJson = {
     name: path.basename(projectRoot),
-    version: "0.1.0",
+    version: "1.0.0",
     private: true,
     scripts: {
-      dev: "reactive dev"
+      dev: "reactive dev",
+      test: "reactive test",
+      build: "reactive build",
+      start: "reactive start"
     },
     dependencies: {
-      reactivejs: "latest",
+      "@tco/reactivejs": "latest",
     },
     devDependencies: {
       typescript: "^4.0.0",
@@ -126,6 +145,14 @@ async function createProject(projectName) {
   s.start('Creating package.json');
   await Bun.write(path.join(projectRoot, 'package.json'), JSON.stringify(packageJson, null, 2));
   s.stop('package.json created');
+
+  s.start('Creating project files');
+  for (const [filePath, fileContent] of Object.entries(projectFiles)) {
+    const fullPath = path.join(projectRoot, filePath);
+    await Bun.write(fullPath, fileContent);
+    await sleep(200);
+  }
+  s.stop('Project files created');
 
   s.start('Installing dependencies');
   try {
@@ -151,14 +178,20 @@ async function createProject(projectName) {
   log.magenta('└' + '─'.repeat(50) + '┘');
 }
 
-const [,, projectName = '.'] = process.argv;
+async function main() {
+  await checkVersion();
 
-if (!projectName) {
-  console.error('Please specify the project name or use "." for the current directory.');
-  process.exit(1);
+  const [,, projectName = '.'] = process.argv;
+
+  if (!projectName) {
+    console.error('Please specify the project name or use "." for the current directory.');
+    process.exit(1);
+  }
+
+  createProject(projectName);
 }
 
-createProject(projectName);
+main();
 
 async function convertToReactiveApp(projectRoot) {
   const s = spinner();

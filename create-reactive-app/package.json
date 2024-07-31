@@ -1,13 +1,13 @@
 {
-  "version": "0.0.2",
-  "name": "create-reactive",
+  "version": "0.0.5",
+  "name": "generate-reactive-app",
   "keywords": ["reactive", "cli", "create-app", "bun"],
   "author": "Tanner Cottle",
   "license": "MIT",
   "module": "index.js",
   "main": "index.js",
   "bin": {
-    "create-reactive": "./index.js"
+    "generate-reactive-app": "./index.js"
   },
   "type": "module",
   "scripts": {
@@ -17,8 +17,9 @@
     "typescript": "^5.0.0"
   },
   "dependencies": {
-    "@types/bun": "latest",
     "@clack/prompts": "^0.7.0",
-    "colored-terminal": "^1.0.5"
+    "@types/bun": "latest",
+    "colored-terminal": "^1.0.5",
+    "semver": "^7.6.3"
   }
 }
